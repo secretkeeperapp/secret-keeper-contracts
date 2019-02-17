@@ -1,2 +1,2 @@
 # secret-keeper-contracts
-Solidity contracts for running SecretKeeper
+Solidity contracts for running SecretKeeper.
