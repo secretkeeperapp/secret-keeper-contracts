@@ -3,28 +3,34 @@ pragma experimental ABIEncoderV2;
 
 import "./Dictionary.sol";
 
+/**
+ * @title SecretKeeper
+ * @dev The SecretKeeper contract provides functionality to store and retrieve secrets.
+**/
+
 contract SecretKeeper {
-    using Dictionary for Dictionary.Data;
-    using Dictionary for Dictionary.TestatorInfo;
-    using Dictionary for Dictionary.SecretInfo;
+    using Dictionary for *;
 
     mapping(address => Dictionary.TestatorInfo) infoForOwner;
     mapping(address => Dictionary.Data) beneficiaryToSecrets;
     mapping(uint => Dictionary.SecretInfo) allSecrets;
 
 
-    // Event emitted upon callback completion; watched from front end
+    // Event emitted upon callback completion; watched from front end.
+    // TODO: Enigma does not currently use the callable or callback, so this
+    // isn't being used either.
     event CallbackFinished(string secret);
 
     address public owner;
 
-    // Constructor called when new contract is deployed
+    /**
+     * @dev The SecretKeeper constructor sets the original `owner` of the contract to the sender
+     * account when a new contract is deployed
+     */
     constructor() public {
         owner = msg.sender;
     }
 
-    //https://ethereum.stackexchange.com/questions/49185/solidity-conversion-bytes-memory-to-uint
-    //https://ethereum.stackexchange.com/questions/51229/how-to-convert-bytes-to-uint-in-solidity
     function sliceUint(bytes memory bs)
     internal pure
     returns (uint)
@@ -40,7 +46,7 @@ contract SecretKeeper {
         return x;
     }
 
-    // Mock Enigma function
+    // Mock Enigma callable function.
     function decryptSecretForBeneficiary(uint index) public view returns (bytes memory decryptedSecret) {
         Dictionary.Data storage secretIds = beneficiaryToSecrets[msg.sender];
         uint[] memory keys = secretIds.keys();
